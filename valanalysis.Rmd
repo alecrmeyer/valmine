@@ -1,0 +1,252 @@
+---
+title: "valorant"
+author: "Alec Meyer"
+date: '2022-04-01'
+output: html_document
+---
+Questions:
+1. Can we predict if a person is smurfing based on their performance?
+2. Can we predict the outcome of a match given pre match statistics?
+3. Can we predict someones ranks based on their match stats?
+CAN YOU DETECT A SMURF VS A REAL PLAYER
+```{r, echo=FALSE, warning=FALSE}
+library(RMariaDB)
+
+statsdb <- dbConnect(RMariaDB::MariaDB(), user='root', password="password", dbname='valorant_tracker', host='localhost')
+
+query <- paste("SELECT * FROM stats")
+
+rs = dbSendQuery(statsdb, query)
+data <- dbFetch(rs)
+
+
+dbDisconnect(statsdb)
+```
+
+Basic Analysis
+```{r, echo=FALSE}
+#win percentage
+wins <- sum(data$result == "victory")
+total <- nrow(data)
+winp <- wins / total
+
+#kdr
+kdr <- mean(data$kdratio)
+
+hs <- mean(data$headshot_percentage)
+
+ranks <- factor(data$current_rank, levels = c("Iron 1", "Iron 2", "Iron ,3" "Bronze 1","Bronze 2", "Bronze 3", "Silver 1", "Silver 2", "Silver 3", "Gold 1", "Gold 2", "Gold 3", "Platinum 1", "Platinum 2", "Platinum 3", "Diamond 1", "Diamond 2", "Diamond 3", "Immortal 1", "Immortal 2", "Immortal 3"))
+
+
+plot(ranks)
+```
+Win Percentage: `r winp`
+
+KDR: `r kdr`
+
+Headshot Percentage: `r hs`
+
+
+Subset Selection
+```{r}
+library(leaps)
+
+#Set data to a dataframce
+df <- as.data.frame(data)
+
+df <- subset(data, select = -c(match_id) )
+df$result <- as.factor(df$result)
+
+#Create training and test sets
+train = sample(1:nrow(df),3*nrow(df)/4, replace=FALSE)
+test = (-train)
+train_set = df[train,]
+test_set = df[-test,]
+
+```
+
+###Forward Selection
+```{r}
+regfit.fwd = regsubsets(train_set$result~.,data=train_set, nvmax=ncol(train_set), method="forward")
+
+regfit.fwd.sum = summary(regfit.fwd)
+
+n = dim(train_set)[1]
+p = rowSums(regfit.fwd.sum$which)
+
+rss = regfit.fwd.sum$rss
+AIC = n*log(rss/n) + 2*(p)
+BIC = n*log(rss/n) + (p)*log(n)
+
+regfit.fwd.AIC.min = which.min(AIC)
+regfit.fwd.BIC.min = which.min(BIC)
+
+regfit.fwd.AIC.coef = coef(regfit.fwd, id = regfit.fwd.AIC.min)
+regfit.fwd.BIC.coef = coef(regfit.fwd, id = regfit.fwd.BIC.min)
+```
+
+
+###Backward selection
+```{r}
+regfit.bwd = regsubsets(train_set$result~.,data=train_set, nvmax=ncol(train_set), method="backward")
+
+regfit.bwd.sum = summary(regfit.bwd)
+
+n = dim(train_set)[1]
+p = rowSums(regfit.bwd.sum$which)
+
+rss = regfit.bwd.sum$rss
+AIC = n*log(rss/n) + 2*(p)
+BIC = n*log(rss/n) + (p)*log(n)
+
+regfit.bwd.AIC.min = which.min(AIC)
+regfit.bwd.BIC.min = which.min(BIC)
+
+regfit.bwd.AIC.coef = coef(regfit.bwd, id = regfit.bwd.AIC.min)
+regfit.bwd.BIC.coef = coef(regfit.bwd, id = regfit.bwd.BIC.min)
+```
+
+All Models
+```{r}
+length(regfit.fwd.AIC.coef)
+length(regfit.fwd.BIC.coef)
+length(regfit.bwd.AIC.coef)
+length(regfit.bwd.BIC.coef)
+```
+
+```{r}
+regfit.bwd.BIC.coef
+```
+
+Based off of the models selected, I have decided to chose the backward selected model using BIC. This model made the most sense intuitively. I also dropped a predictor which was when my rank was Diamond 2 as this predictor was irrelevent to what my goal was
+
+
+
+Cleaning some data
+```{r, echo=FALSE}
+df <- as.data.frame(data)
+
+#df$result<-ifelse(df$result=="victory",1,0)
+
+df$result <- as.factor(df$result)
+df$agent <- as.factor(df$agent)
+df$map <- as.factor(df$map)
+
+```
+
+
+
+### Split into training and test and check proportions of the split sets
+```{r}
+
+#initial victory to defeat proportion
+prop = sum(df$result == 1) / sum(df$result== 0)
+
+### verify split
+train = sample(1:nrow(df),3*nrow(df)/4, replace=FALSE)
+test = (-train)
+
+train_set = df[train,]
+test_set = df[-test,]
+
+test_prop = sum(test_set$result == 1) / sum(test_set$result== 0)
+
+train_prop = sum(train_set$result == 1) / sum(train_set$result == 0)
+```
+Full set proportions: `r prop`
+
+Test set proportions: `r test_prop`
+
+Train set proportions: `r train_prop`
+
+
+###Train model on training set using logistic regression 
+```{r}
+glm.fit = glm(result~damage+plants+assists+damage_received+placement, data=train_set,family='binomial')
+```
+
+
+### Prediction on the testing set. 
+```{r}
+glm.prob = predict(glm.fit, test_set, type='response')
+
+glm.pred = rep("defeat" , nrow(test_set))
+glm.pred[glm.prob > .4] = "victory"
+tab <- table(glm.pred, test_set$result)
+
+misclass <- 1-mean(glm.pred == test_set$result)
+misclass
+true_defeat <- tab[1][1]
+true_victory <- tab[4][1]
+
+pred_defeat_actual_victory <- tab[2][1]
+pred_victory_actual_defeat <- tab[3][1]
+```
+
+The misclassification rate for this model is: `r misclass`
+
+There were `r pred_victory_actual_defeat` matches predicted to be a victory but were actually defeats
+
+There were `r pred_defeat_actual_victory` matches
+predicted to be a defeat but were actually victories
+
+
+```{r}
+#glm.prob = predict(glm.fit,df[test,],type='response') 
+#head(glm.prob) #P(Y=1|X)
+
+
+#Xh = data.frame(rounds=25, map="Breeze", kills=13, headshots=8, deaths=22, assists=5, damage=2800, damage_received=330, econ_rating=43, plants=0, defuses=0, first_bloods=1, grenade_casts=5, ability_2_casts=8, ability_1_casts=16, ultimate_casts=2, placement=10, kdratio=0.6, headshot_percentage=19, first_deaths=5, last_deaths=2)
+
+
+
+
+```
+
+Classify
+```{r}
+#glm.pred = rep('No',length(test))
+#glm.pred[ glm.prob >0.5] ='Yes'
+#table(glm.pred, df[test,]$result) #rows are predicted, # columns are true 
+#1-mean(glm.pred == df[test,]$result)
+
+```
+
+
+Using logistic function find 50% stats needed
+```{r}
+#exp(x) / (1 + exp(x))
+
+
+```
+
+Random Forest
+```{r}
+library(randomForest)
+
+#df = subset(df,select= -c(ability_1_casts, grenade_casts, ability_2_casts))
+
+
+train = sample(1:nrow(df),3*nrow(df)/4)
+dim(df)
+df$map <- as.factor(df$map)
+
+rf = randomForest(df$map~.,data=df, subset = train, mtry = 5, importance = TRUE, ntree=500)
+
+rf.prob = predict(rf, newdata = df[-train,]) 
+
+```
+
+```{r}
+
+tab <- table(rf.prob, df[-train,]$map)
+misclass <- 1-mean(rf.prob == df[-train,]$map)
+varImpPlot(rf)
+tabdat <- as.data.frame(tab)
+plot(tabdat)
+tab
+```
+
+```{r}
+
+```
