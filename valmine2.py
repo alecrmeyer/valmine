@@ -21,7 +21,7 @@ sql = """INSERT INTO stats (match_id, rounds, date, result, map,
      ON DUPLICATE KEY UPDATE match_id=VALUES(match_id)"""   
 
 def import_data():
-    with open('/Users/alecrmeyer/Desktop/Projects/valorant/valdataa.json') as f:
+    with open('/Users/alecrmeyer/Desktop/Projects/valmine/valdataa.json') as f:
         data = json.load(f)
     try:
         for i in range(len(data["data"]["matches"])):
@@ -55,7 +55,7 @@ def import_data():
 
         
 def get_teammates():
-    with open('/Users/alecrmeyer/Desktop/Projects/valorant/teammates.json') as f:
+    with open('/Users/alecrmeyer/Desktop/Projects/valmine/teammates.json') as f:
         data = json.load(f)
         players = [[]]
         for i in range(len(data["data"]["teammates"])):

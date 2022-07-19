@@ -7,7 +7,7 @@ from valmine2 import *
 # https://api.tracker.gg/api/v1/valorant/matches/riot/chy%2300000/aggregated?localOffset=300&playlist=competitive
 
 ###gets first page
-driver = webdriver.Chrome('/Users/alecrmeyer/Desktop/Projects/valorant/chromedriver')
+driver = webdriver.Chrome('/Users/alecrmeyer/Desktop/Projects/valmine/chromedriver')
 
 
 name = input("name: ")
@@ -22,7 +22,7 @@ def recur(name, tag):
 
      driver.get("https://api.tracker.gg/api/v1/valorant/matches/riot/" + str(name) + "%23" + str(tag) + "/aggregated?localOffset=300&playlist=competitive")
      jsonXpath = driver.find_element_by_xpath("/html/body/pre")
-     teammates = open("/Users/alecrmeyer/Desktop/Projects/valorant/teammates.json", "w")
+     teammates = open("/Users/alecrmeyer/Desktop/Projects/valmine/teammates.json", "w")
      teammates.write(jsonXpath.text)
      teammates.close()
 
@@ -34,7 +34,7 @@ def recur(name, tag):
                tag = teammates[i+1][1]
                driver.get("https://api.tracker.gg/api/v2/valorant/standard/matches/riot/" + str(name) + "%23" + str(tag) + "?type=competitive")  
                jsonXpath = driver.find_element_by_xpath("/html/body/pre")
-               f = open("/Users/alecrmeyer/Desktop/Projects/valorant/valdataa.json", "w")
+               f = open("/Users/alecrmeyer/Desktop/Projects/valmine/valdataa.json", "w")
                f.write(jsonXpath.text)
                f.close()
                import_data()
@@ -46,7 +46,7 @@ def recur(name, tag):
 
                     jsonXpath = driver.find_element_by_xpath("/html/body/pre")
 
-                    f = open("/Users/alecrmeyer/Desktop/Projects/valorant/valdataa.json", "w")
+                    f = open("/Users/alecrmeyer/Desktop/Projects/valmine/valdataa.json", "w")
                     f.write(jsonXpath.text)
                     f.close()
                     import_data()
