@@ -19,7 +19,7 @@ name = input("name: ")
 tag = input("tag: ")
 
 
-def recur(name, tag):
+def addPlayers(name, tag):
      
     player = Player(name, tag, driver)
     teammates = get_teammates(player.getTeammates())
@@ -42,12 +42,11 @@ def recur(name, tag):
                 matches = player.getAllMatches()
                 for match in matches:
                     import_data(False, match)
-                #print(name + tag + "added")
-                print(queue)
+                print(name +"#"+ tag + " added")
             except:
                 print("No matches/Private/Error")
          
-recur(name, tag)
+addPlayers(name, tag)
 
 
 driver.close()

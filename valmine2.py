@@ -1,16 +1,5 @@
 import json
-import mysql.connector
-
-
-
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="password",
-  database="valorant_tracker"
-)
-
-mycursor = mydb.cursor()
+from MySQLSetup import *
 
 sql = """INSERT INTO stats (match_id, rounds, date, result, map, smurf, 
     agent, kills, headshots, deaths, assists, damage, damage_received, 
@@ -21,16 +10,12 @@ sql = """INSERT INTO stats (match_id, rounds, date, result, map, smurf,
      ON DUPLICATE KEY UPDATE match_id=VALUES(match_id)"""   
 
 def import_data(smurf, data):
-    # with open('/Users/alecrmeyer/Desktop/Projects/valmine/valdataa.json') as f:
-    #     data = json.load(f)
-    #try:
 
     data = json.loads(data)
     for i in range(len(data["data"]["matches"])):
         metadata = []
         metadata.append(data["data"]["matches"][i]["attributes"]["id"])
-
-        
+      
         metadata.append(data["data"]["matches"][i]["metadata"]["modeMaxRounds"])
         metadata.append(data["data"]["matches"][i]["metadata"]["timestamp"])
         metadata.append(data["data"]["matches"][i]["metadata"]["result"])
@@ -51,12 +36,8 @@ def import_data(smurf, data):
         metadata.append(data["data"]["matches"][i]["segments"][0]["stats"]["rank"]["metadata"]["tierName"])
         metadata.append(data["data"]["matches"][i]["segments"][0]["attributes"]["platformUserIdentifier"])
 
-        mycursor.execute(sql, metadata)
 
-        mydb.commit()
-
-    #except:
-        #print("Skipped")
+        sendQuery(sql, metadata)
 
         
 def get_teammates(data):
@@ -70,9 +51,6 @@ def get_teammates(data):
         
     return players
 
-if __name__ == '__main__':
-    # Script2.py executed as script
-    # do something
-    import_data(True)
+
 
 
