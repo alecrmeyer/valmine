@@ -9,6 +9,9 @@ Questions:
 2. Can we predict the outcome of a match given pre match statistics?
 3. Can we predict someones ranks based on their match stats?
 CAN YOU DETECT A SMURF VS A REAL PLAYER
+  -- sample with "Lewis Hamilton#poopy" against Chy#00000
+  -- we want to compare a legitimate player in their true rank vs a player playing against a lower skill level
+  -- this could be a simple boundry condition omitting a model by saying "if they have more than X amount of kills or X amount of damage we can consider them a smurf and not otherwise" this would realistically probably work fairly well (and will need to be tested), but it will surely have a substantial number of false positives and false negatives because some legitimate players just have good games where they perform well and some smurfs may under perform and will not always reach the boundry threshold to be classified as such. 
 ```{r, echo=FALSE, warning=FALSE}
 library(RMariaDB)
 
