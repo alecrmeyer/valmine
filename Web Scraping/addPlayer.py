@@ -16,7 +16,7 @@ driver = webdriver.Chrome('Tools/chromedriver')
 name = input("name: ")
 tag = input("tag: ")
 
-
+#BFS for all users
 def addPlayers(name, tag):
      
     player = Player(name, tag, driver)
