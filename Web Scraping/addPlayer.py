@@ -3,8 +3,6 @@ from selenium.webdriver.common.keys import Keys
 from valmine2 import *
 from Player import *
 
-#SHOULD FIND PLAYERS BASED ON A USERS PLAYED GAMES NOT BASED ON THEIR MOST PLAYED TEAM MATES
-#SMURFS ARE MORE LIKELY TO PLAY ALONE AND NOT WITH MANY PEOPLE
 
 ###Cloudflare blocked my previous attempt to curl by only allowing requests which could execute javascript (I believe)
 
@@ -13,7 +11,7 @@ from Player import *
 ###gets first page
 
 ## want to try breadthfirst search to minimize loop possiblity 
-driver = webdriver.Chrome('/Users/alecrmeyer/Desktop/Projects/valmine/chromedriver')
+driver = webdriver.Chrome('Tools/chromedriver')
 
 name = input("name: ")
 tag = input("tag: ")
