@@ -4,13 +4,7 @@ from valmine2 import *
 from Player import *
 
 
-###Cloudflare blocked my previous attempt to curl by only allowing requests which could execute javascript (I believe)
-
-# https://api.tracker.gg/api/v1/valorant/matches/riot/chy%2300000/aggregated?localOffset=300&playlist=competitive
-
-###gets first page
-
-## want to try breadthfirst search to minimize loop possiblity 
+#Cloudflare blocked my previous attempt to curl by only allowing requests which could execute javascript (I believe)
 driver = webdriver.Chrome('Tools/chromedriver')
 
 name = input("name: ")
@@ -30,7 +24,6 @@ def addPlayers(name, tag):
         player = queue.pop(0)
 
         for i in range(len(get_teammates(player.getTeammates()))):  
-
             try:
                 name = teammates[i+1][0]
                 tag = teammates[i+1][1]
@@ -41,9 +34,11 @@ def addPlayers(name, tag):
                 for match in matches:
                     import_data(False, match)
                 print(name +"#"+ tag + " added")
-            except:
-                print("No matches/Private/Error")
-         
+            except IndexError as e:
+                print(e)
+                print("No teammates")
+
+        
 addPlayers(name, tag)
 
 

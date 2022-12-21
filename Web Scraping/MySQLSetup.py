@@ -8,8 +8,8 @@ _mydb = mysql.connector.connect(
 
 sql = """CREATE DATABASE IF NOT EXISTS valorant_tracker;
 USE valorant_tracker;
-CREATE TABLE IF NOT EXISTS`stats` (
-    `match_id` varchar(100) DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `stats` (
+  `match_player_id` varchar(100) DEFAULT NULL,
   `rounds` int DEFAULT NULL,
   `date` datetime DEFAULT NULL,
   `result` varchar(45) DEFAULT NULL,
@@ -36,8 +36,7 @@ CREATE TABLE IF NOT EXISTS`stats` (
   `first_deaths` int DEFAULT NULL,
   `last_deaths` int DEFAULT NULL,
   `current_rank` varchar(20) DEFAULT NULL,
-  `userid` varchar(40) DEFAULT NULL,
-  UNIQUE KEY `match_id` (`match_id`)
+  UNIQUE KEY `match_player_id` (`match_player_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"""
 
 _cursor = _mydb.cursor()
