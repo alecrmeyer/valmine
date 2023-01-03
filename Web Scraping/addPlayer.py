@@ -4,6 +4,11 @@ from valmine2 import *
 from Player import *
 
 
+import os
+import sys
+print(os.path.dirname(sys.executable))
+
+
 #Cloudflare blocked my previous attempt to curl by only allowing requests which could execute javascript (I believe)
 driver = webdriver.Chrome('Tools/chromedriver')
 
