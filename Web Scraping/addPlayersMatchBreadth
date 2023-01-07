@@ -41,7 +41,6 @@ def addPlayers(name, tag):
                 print(e)
                 print("No teammates")    
 
-    
 
 
 def get_all_players_from_all_matches(player):

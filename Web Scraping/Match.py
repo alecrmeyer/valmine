@@ -20,8 +20,8 @@ class Match:
                 count+=1
                 if count >= 10:
                     break
-
         return allPlayers
+
 from selenium import webdriver
 
 driver = webdriver.Chrome('Tools/chromedriver')
