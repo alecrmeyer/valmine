@@ -7,3 +7,8 @@ Questions:
 
 Ideas:
     -Outliers for kills/damage didnt have much to infer about, but splitting players with large rank increases could be interesting. 
+    -Determine the outcome of a match based on all 10 players statistics. 
+        -Predict a players performance based on the map and agent selected. 
+        -Then average their performance with the rest of the team 
+        -Then determine which team has a higher chance to win based on their averaged  
+        stats
