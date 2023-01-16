@@ -24,3 +24,21 @@ Determine the outcome of a match based on all 10 players statistics.
 * Then average their performance with the rest of the team.
 * Then determine which team has a higher chance to win based on their averaged  
 stats.
+
+<h1>4 Data</h1>
+<h2>4.1 Obtaining Data</h2>
+The data used in this project was obtained by scraping individual match data from https://tracker.gg. Riot Games does not provide an open API for VALORANT, instead they require a developers license to query user and match data. The algorithm used to gather match data follows a breadth-first approach and works like so:
+```
+Input a single users ID as the root node
+Create a queue
+Add the root user to the queue
+While the queue is not empty:
+    
+    For each of the next users matches played:
+        For each player in the match:
+            Add the player to a queue
+            Add the players stats from this match to the DB
+        
+```
+<h2>4.2 Format</h2>
+
