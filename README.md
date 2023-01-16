@@ -1,5 +1,17 @@
 <h1>1 Background</h1>
-VALORANT is a free-to-play first-person tactical hero shooter video games developed and published by Riot Games. In recent years, VALORANT has become one of the most watched and played competetive video games. Competetive VALORANT is 5v5 and first to 13.
+VALORANT is a free-to-play first-person tactical hero shooter video games developed and published by Riot Games. In recent years, VALORANT has become one of the most watched and played competetive video games. Competetive VALORANT is 5v5 and first to 13. There are 25 competetive rankings in VALORANT which are:
+
+* Iron 1-3
+* Bronze 1-3
+* Silver 1-3
+* Gold 1-3
+* Platinum 1-3
+* Diamond 1-3
+* Ascendant 1-3
+* Immortal 1-3
+* Radiant
+
+(((Add rank distribution chart here)))
 
 <h1>2 Overview</h1>
 The goal of this project is explore trends and correlations drived from competetive VALORANT match data. There are 1.1 million matches being used for analysis ranging from all skill levels in the game. The code used to gather this match data is provided in the repository and explained below. The data gathered is by a single players match statistics.
@@ -33,12 +45,14 @@ Input a single users ID as the root node
 Create a queue
 Add the root user to the queue
 While the queue is not empty:
-    
-    For each of the next users matches played:
+    Pop current user from top of the queue
+    For each of the current user's matches played:
         For each player in the match:
             Add the player to a queue
             Add the players stats from this match to the DB
-        
 ```
+This script was ran for about 16 hours total with two different root node users. The first user was currently ranked Ascendant 2 and the second user was ranked Platinum 1. Running the scrapper with these two unique nodes caused 2 gaussian peaks in the resulting competetive rank distribution. 
+
 <h2>4.2 Format</h2>
+The data is formated as:
 
