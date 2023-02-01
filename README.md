@@ -58,3 +58,6 @@ The data is formated as:
 
 Update 1/28/2023:
 I was able to apply a basic anomaly detection algorithm to the data set based on each users average kills and deaths. After viewing the users accounts that were flagged as anomalies, they all appeared to not be legitimate. That being said it was a very simple example and I have not run any validation to find the best threshold and to test accuracy(which won't be possible because all of this data is unlabled). I miight try to train this model a bit better, and compare against other anomaly detection models, then let it run against my web scraper to flag accounts in real time. "Potential smurf".
+
+Update 1/31/2023: 
+Check for each match played by each user whether that users stats in that match is an anomaly, If so add to a users anomaly count. Users with high anomaly count would be flagged. The anomalies could have weights too to give a user a continuous anomaly score.
