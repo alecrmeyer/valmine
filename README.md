@@ -11,7 +11,7 @@ VALORANT is a free-to-play first-person tactical hero shooter video games develo
 * Immortal 1-3
 * Radiant
 
-(((Add rank distribution chart here)))
+![Rank Distribution](https://images.squarespace-cdn.com/content/v1/59af2189c534a58c97bd63b3/7416f41a-17ec-4d71-9f7e-772dc2891dae/Valorant+rank+distribution+February+2024+Episode+8+Act+I.jpg?format=2500w)
 
 <h1>2 Overview</h1>
 The goal of this project is to explore trends and correlations derived from competitive VALORANT match data. There are 1.1 million matches being used for analysis ranging from all skill levels in the game. The code used to gather this match data is provided in the repository and explained below. The data gathered is by a single player's match statistics.
