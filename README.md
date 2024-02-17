@@ -39,7 +39,7 @@ stats.
 <h1>4 Data</h1>
 <h2>4.1 Obtaining Data</h2>
 The data used in this project was obtained by scraping individual match data from https://tracker.gg. Riot Games does not provide an open API for VALORANT, instead, they require a developer's license to query users and match data. The algorithm used to gather match data follows a breadth-first approach and works like so:
-```
+
 Input a single users ID as the root node
 Create a queue
 Add the root user to the queue
@@ -50,7 +50,8 @@ While the queue is not empty:
             Add the player to a queue
             Add the player's stats from this match to the DB
             
-```This script was run for about 16 hours total with two different root node users. The first user was currently ranked Ascendant 2 and the second user was ranked Platinum 1. Running the scrapper with these two unique nodes caused 2 gaussian peaks in the resulting competitive rank distribution. 
+
+This script was run for about 16 hours total with two different root node users. The first user was currently ranked Ascendant 2 and the second user was ranked Platinum 1. Running the scrapper with these two unique nodes caused 2 gaussian peaks in the resulting competitive rank distribution. 
 
 <h2>4.2 Format</h2>
 The data is formated as:
