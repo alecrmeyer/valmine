@@ -3,7 +3,7 @@ import mysql.connector
 _mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="password"
+  password="root"
 )
 
 sql = """CREATE DATABASE IF NOT EXISTS valorant_tracker;
@@ -45,7 +45,7 @@ _cursor.execute(sql)
 _mydb = mysql.connector.connect(
   host="localhost",
   user="root",
-  password="password",
+  password="root",
   database="valorant_tracker"
 )
 

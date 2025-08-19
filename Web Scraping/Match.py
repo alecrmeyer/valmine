@@ -24,7 +24,8 @@ class Match:
 
 from selenium import webdriver
 
-driver = webdriver.Chrome('Tools/chromedriver')
+cService = webdriver.ChromeService(executable_path=r'C:\Users\Alec\Desktop\Projects\valmine\Tools\chromedriver')
+driver = webdriver.Chrome(service = cService)
 match = Match("65d8be75-b7fa-49d4-a8ce-d80d63876e9c", driver)
 print(match.getAllPlayers())
             
