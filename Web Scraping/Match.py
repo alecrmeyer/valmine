@@ -1,5 +1,4 @@
 import json
-import time
 class Match:
     def __init__(self, uid, driver):
         self.uid = uid

@@ -1,10 +1,5 @@
 import mysql.connector
 
-_mydb = mysql.connector.connect(
-  host="localhost",
-  user="root",
-  password="root"
-)
 
 sql = """CREATE DATABASE IF NOT EXISTS valorant_tracker;
 USE valorant_tracker;
@@ -39,8 +34,6 @@ CREATE TABLE IF NOT EXISTS `stats` (
   UNIQUE KEY `match_player_id` (`match_player_id`)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;"""
 
-_cursor = _mydb.cursor()
-_cursor.execute(sql)
 
 _mydb = mysql.connector.connect(
   host="localhost",

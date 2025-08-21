@@ -3,20 +3,19 @@
 import { useState, ChangeEvent, JSX } from 'react';
 
 interface FormValues {
-  economyRating: number;
-  headshot_percentage: number;
-  headshots: number;
-  damage: number;
+  match_id: string;
+  name: string;
+  tag: string;
 }
 
+let response_show: object | string | null = null;
 type FormField = keyof FormValues;
 
 export default function Home(): JSX.Element {
   const [values, setValues] = useState<FormValues>({
-    economyRating: 0,
-    headshot_percentage: 0,
-    headshots: 0,
-    damage: 0
+    match_id: "",
+    name: "",
+    tag: "",
   });
 
   const [errors, setErrors] = useState<Partial<FormValues>>({});
@@ -44,6 +43,7 @@ export default function Home(): JSX.Element {
     setIsSubmitted(true);
     setTimeout(() => setIsSubmitted(false), 3000);
     fetchSmurfPrediction();
+
   };
 
 
@@ -56,10 +56,9 @@ export default function Home(): JSX.Element {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          econ_rating: values.economyRating,
-          headshot_percentage: values.headshot_percentage,
-          headshots: values.headshots,
-          damage: values.damage
+          match_id: values.match_id,
+          name: values.name,
+          tag: values.tag,
         })
       });
 
@@ -69,6 +68,12 @@ export default function Home(): JSX.Element {
 
       const data = await response.json();
       console.log('Prediction result:', data);
+      let smurf_prediction = data.smurf_prediction;
+      if (smurf_prediction === 1) {
+        response_show = "SMURF";
+      } else if (smurf_prediction === 0) {
+        response_show = "Not a smurf";
+      }
     }
     catch(error: any) {
       console.error('Error fetching prediction:', error);}
@@ -77,10 +82,9 @@ export default function Home(): JSX.Element {
 
   const handleClear = (): void => {
     setValues({
-      economyRating: 0,
-      headshot_percentage: 0,
-      headshots: 0,
-      damage: 0
+      match_id: "",
+      name: "",
+      tag: "",
     });
     setErrors({});
     setIsSubmitted(false);
@@ -93,28 +97,22 @@ export default function Home(): JSX.Element {
     placeholder: string;
   }> = [
     {
-      key: 'economyRating',
-      label: 'Econ Rating',
-      type: 'number',
-      placeholder: 'Enter the econ rating...'
+      key: 'match_id',
+      label: 'Match ID',
+      type: 'string',
+      placeholder: 'Enter the match ID...'
     },
     {
-      key: 'headshot_percentage',
-      label: 'Headshot Percentage',
-      type: 'number',
-      placeholder: 'Enter the headshot percentage...'
+      key: 'name',
+      label: 'Player Name',
+      type: 'string',
+      placeholder: 'Enter the player name...'
     },
     {
-      key: 'headshots',
-      label: 'Number of Headshots',
-      type: 'number',
-      placeholder: 'Enter the number of headshots...'
-    },
-    {
-      key: 'damage',
-      label: 'Damage',
-      type: 'number',
-      placeholder: 'Enter the amount of damage...'
+      key: 'tag',
+      label: 'Player Tag',
+      type: 'string',
+      placeholder: 'Enter the player tag...'
     }
   ];
 
@@ -125,9 +123,6 @@ export default function Home(): JSX.Element {
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
             Smurf <span className="text-purple-400">Or Not</span>
           </h1>
-          <p className="text-slate-300 text-lg">
-            Fill out the information below to determine if a player is a smurf or not.
-          </p>
         </header>
 
         <div className="max-w-2xl mx-auto">
@@ -148,14 +143,9 @@ export default function Home(): JSX.Element {
                     <input
                       type={type}
                       value={values[key]}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => 
-                        handleInputChange(key, e.target.value)
-                      }
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => handleInputChange(key, e.target.value)}
                       className={`w-full px-4 py-3 bg-white/10 border rounded-xl text-white placeholder-white/50 focus:ring-2 focus:border-transparent outline-none transition-all backdrop-blur-sm ${
-                        errors[key] 
-                          ? 'border-red-400 focus:ring-red-400' 
-                          : 'border-white/30 focus:ring-purple-400'
-                      }`}
+                        errors[key] ? 'border-red-400 focus:ring-red-400' : 'border-white/30 focus:ring-purple-400'}`}
                       placeholder={placeholder}
                     />
                     {errors[key] && (
@@ -181,25 +171,15 @@ export default function Home(): JSX.Element {
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* Live Preview */}
-          <div className="mt-8 backdrop-blur-sm bg-white/5 border border-white/10 rounded-2xl p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Live Preview:</h3>
-            <div className="grid md:grid-cols-2 gap-4 text-sm">
-              {inputFields.map(({ key, label }) => (
-                <div key={key} className="text-white/70">
-                  <span className="text-purple-300">{label}:</span>{' '}
-                  {values[key] || '(empty)'}
-                </div>
-              ))}
+            <div className="mt-6 text-xs text-white/50 italic text-center">
+                {typeof response_show === 'object' && response_show !== null ? (
+                  <pre>{JSON.stringify(response_show, null, 2)}</pre>
+                ) : (
+                  <span className="text-4xl md:text-6xl font-bold text-white mb-4">{response_show ? String(response_show) : 'No prediction yet.'}</span>
+                )}
             </div>
-          </div>
+          </div>         
         </div>
-
-        <footer className="text-center mt-16 text-white/50 text-sm">
-          <p>Built with Next.js, TypeScript, and Tailwind CSS</p>
-        </footer>
       </div>
     </div>
   );

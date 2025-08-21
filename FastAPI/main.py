@@ -1,31 +1,25 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
-import numpy as np
-
+import pandas as pd
+from playerStats import *
+    
 model = joblib.load(r"C:\Users\Alec\Desktop\Projects\valmine\Analysis\model.pkl")
 
 app = FastAPI()
 
 class PredictRequest(BaseModel):
-    econ_rating: float
-    headshot_percentage: float
-    headshots: int
-    damage: int
+    match_id: str
+    name: str
+    tag: str
 
 
 @app.post("/predict")
-def predict(request: PredictRequest):
-    features = np.array([[
-        request.econ_rating,
-        request.headshot_percentage,
-        request.headshots,
-        request.damage
-    ]])
+def predict(request: PredictRequest): 
+
     
-    prediction = model.predict(features)
+    player_stats = get_player_stats(request.match_id, request.name, request.tag)
+    player_stats_df = pd.DataFrame([player_stats])
+    prediction = model.predict(player_stats_df)
     return {"smurf_prediction": int(prediction[0])}
 
-@app.get("/")
-def read_root():
-    return {"message": "Welcome to the Smurf Detection API. Use the /predict endpoint to make predictions."}
